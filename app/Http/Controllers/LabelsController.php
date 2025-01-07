@@ -191,6 +191,7 @@ class LabelsController extends Controller
             //$original_aspect_ratio = 4;//(w/h)
             $factor = (($barcode_details->width / $barcode_details->height)) / ($barcode_details->is_continuous ? 2 : 4);
             $html = '';
+            // return $barcode_details;
             foreach ($product_details_page_wise as $page => $page_products) {
 
                 if($i == 0){

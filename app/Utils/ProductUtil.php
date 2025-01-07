@@ -1773,7 +1773,7 @@ class ProductUtil extends Util
 
         //TODO::Check if result is correct after changing LEFT JOIN to INNER JOIN
         $pl_query_string = $this->get_pl_quantity_sum_string('pl');
-
+        // print_r($pl_query_string);exit;
         if ($for == 'view_product' && !empty(request()->input('product_id'))) {
             $location_filter = 'AND transactions.location_id=l.id';
         }
@@ -1800,6 +1800,7 @@ class ProductUtil extends Util
             DB::raw("SUM(vld.qty_available) as stock"),
             'variations.sub_sku as sku',
             'p.name as product',
+            
             'p.type',
             'p.alert_quantity',
             'p.id as product_id',
@@ -1811,11 +1812,7 @@ class ProductUtil extends Util
             'l.name as location_name',
             'l.id as location_id',
             'variations.id as variation_id',
-            'c.name as category_name',
-            'p.product_custom_field1',
-            'p.product_custom_field2',
-            'p.product_custom_field3',
-            'p.product_custom_field4'
+            'c.name as category_name'
         )->groupBy('variations.id', 'vld.location_id');
             
         if (isset($filters['show_manufacturing_data']) && $filters['show_manufacturing_data']) {
@@ -1832,7 +1829,6 @@ class ProductUtil extends Util
             $products->where('p.id', $filters['product_id'])
                     ->groupBy('l.id');
         }
-
         if ($for == 'view_product') {
             return $products->get();
         } else if ($for == 'api') {

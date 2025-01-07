@@ -3788,7 +3788,6 @@ class TransactionUtil extends Util
         if (!empty($location_id)) {
             $query->where('purchase.location_id', $location_id);
         }
-
         $details = $query->first();
         return $details->stock;
     }

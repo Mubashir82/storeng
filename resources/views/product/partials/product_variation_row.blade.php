@@ -14,6 +14,10 @@
 <tr class="variation_row">
     <td>
         {!! Form::select('product_variation[' . $row_index .'][variation_template_id]', $variation_templates, null, ['class' => 'form-control input-sm variation_template', 'required']); !!}
+        <button type="button" class="btn btn-block btn-primary btn-modal" 
+                data-href="{{action('VariationTemplateController@create')}}" 
+                data-container=".variation_modal">
+                <i class="fa fa-plus"></i> @lang('messages.add')</button>
         <input type="hidden" class="row_index" value="{{$row_index}}">
     </td>
 

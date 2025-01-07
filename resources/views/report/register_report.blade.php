@@ -47,17 +47,8 @@
                             <th>@lang('sale.location')</th>
                             <th>@lang('report.user')</th>
                             <th>@lang('cash_register.total_card_slips')</th>
-                            <th>@lang('cash_register.total_cheques')</th>
+                            <th>Total Transactions</th>
                             <th>@lang('cash_register.total_cash')</th>
-                            <th>@lang('lang_v1.total_bank_transfer')</th>
-                            <th>@lang('lang_v1.total_advance_payment')</th>
-                            <th>{{$payment_types['custom_pay_1']}}</th>
-                            <th>{{$payment_types['custom_pay_2']}}</th>
-                            <th>{{$payment_types['custom_pay_3']}}</th>
-                            <th>{{$payment_types['custom_pay_4']}}</th>
-                            <th>{{$payment_types['custom_pay_5']}}</th>
-                            <th>{{$payment_types['custom_pay_6']}}</th>
-                            <th>{{$payment_types['custom_pay_7']}}</th>
                             <th>@lang('cash_register.other_payments')</th>
                             <th>@lang('sale.total')</th>
                             <th>@lang('messages.action')</th>
@@ -67,17 +58,8 @@
                         <tr class="bg-gray font-17 text-center footer-total">
                             <td colspan="4"><strong>@lang('sale.total'):</strong></td>
                             <td class="footer_total_card_payment"></td>
-                            <td class="footer_total_cheque_payment"></td>
+                            <td>Total Transactions</td>
                             <td class="footer_total_cash_payment"></td>
-                            <td class="footer_total_bank_transfer_payment"></td>
-                            <td class="footer_total_advance_payment"></td>'
-                            <td class="footer_total_custom_pay_1"></td>
-                            <td class="footer_total_custom_pay_2"></td>
-                            <td class="footer_total_custom_pay_3"></td>
-                            <td class="footer_total_custom_pay_4"></td>
-                            <td class="footer_total_custom_pay_5"></td>
-                            <td class="footer_total_custom_pay_6"></td>
-                            <td class="footer_total_custom_pay_7"></td>
                             <td class="footer_total_other_payments"></td>
                             <td class="footer_total"></td>
                             <td></td>
@@ -89,8 +71,7 @@
     </div>
 </section>
 <!-- /.content -->
-<div class="modal fade view_register" tabindex="-1" role="dialog" 
-    aria-labelledby="gridSystemModalLabel">
+<div class="modal fade view_register" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
 </div>
 
 @endsection

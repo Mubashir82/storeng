@@ -71,14 +71,14 @@
       							<div class="input-group-addon"><b>@lang( 'lang_v1.size' )</b></div>
 								<input type="text" class="form-control" 
 									name="print[name_size]" 
-									value="15">
+									value="8">
 							</div>
 						</td>
 
 						<td>
 							<div class="checkbox">
 							    <label>
-							    	<input type="checkbox" checked name="print[variations]" value="1"> <b>@lang( 'barcode.print_variations' )</b>
+							    	<input type="checkbox" name="print[variations]" value="1"> <b>@lang( 'barcode.print_variations' )</b>
 							    </label>
 							</div>
 
@@ -101,7 +101,7 @@
       							<div class="input-group-addon"><b>@lang( 'lang_v1.size' )</b></div>
 								<input type="text" class="form-control" 
 									name="print[price_size]" 
-									value="17">
+									value="10">
 							</div>
 
 						</td>
@@ -115,7 +115,7 @@
 										<span class="input-group-addon">
 											<i class="fa fa-info"></i>
 										</span>
-										{!! Form::select('print[price_type]', ['inclusive' => __('product.inc_of_tax'), 'exclusive' => __('product.exc_of_tax')], 'inclusive', ['class' => 'form-control']); !!}
+										{!! Form::select('print[price_type]', ['inclusive' => __('product.inc_of_tax'), 'exclusive' => __('product.exc_of_tax')], 'exclusive', ['class' => 'form-control']); !!}
 									</div>
 								</div>
 							</div>
@@ -127,7 +127,7 @@
 						<td>
 							<div class="checkbox">
 							    <label>
-							    	<input type="checkbox" checked name="print[business_name]" value="1"> <b>@lang( 'barcode.print_business_name' )</b>
+							    	<input type="checkbox" name="print[business_name]" value="1"> <b>@lang( 'barcode.print_business_name' )</b>
 							    </label>
 							</div>
 
@@ -142,7 +142,7 @@
 						<td>
 							<div class="checkbox">
 							    <label>
-							    	<input type="checkbox" checked name="print[packing_date]" value="1"> <b>@lang( 'lang_v1.print_packing_date' )</b>
+							    	<input type="checkbox" name="print[packing_date]" value="1"> <b>@lang( 'lang_v1.print_packing_date' )</b>
 							    </label>
 							</div>
 

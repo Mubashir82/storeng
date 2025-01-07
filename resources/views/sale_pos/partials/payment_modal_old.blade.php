@@ -173,42 +173,55 @@
 				<h4 class="modal-title">@lang('lang_v1.card_transaction_details')</h4>
 			</div>
 			<div class="modal-body">
-			    <div class="row">
-					<div class="col-md-12">
-            			<div class="form-group">
-            			    <input type="text" id="card_string" name="card_string" class="form-control" autofocus>
-        			    </div>
-    			    </div>
-			    </div>
 				<div class="row">
 					<div class="col-md-12">
-            			<div class="col-md-4">
-                			<div class="form-group">
-                				{!! Form::label("card_number", __('lang_v1.card_no')) !!}
-                				{!! Form::text("", null, ['class' => 'form-control', 'placeholder' => __('lang_v1.card_no'), 'id' => "card_number", 'autofocus']); !!}
-                			</div>
-                		</div>
-                		<div class="col-md-4">
-                			<div class="form-group">
-                				{!! Form::label("card_holder_name", __('lang_v1.card_holder_name')) !!}
-                				{!! Form::text("", null, ['class' => 'form-control', 'placeholder' => __('lang_v1.card_holder_name'), 'id' => "card_holder_name"]); !!}
-                			</div>
-                		</div>
-                		<div class="col-md-2">
-                			<div class="form-group">
-                				{!! Form::label("card_month", __('lang_v1.month')) !!}
-                				{!! Form::text("", null, ['class' => 'form-control', 'placeholder' => __('lang_v1.month'),
-                				'id' => "card_month" ]); !!}
-                			</div>
-                		</div>
-                		<div class="col-md-2">
-                			<div class="form-group">
-                				{!! Form::label("card_year", __('lang_v1.year')) !!}
-                				{!! Form::text("", null, ['class' => 'form-control', 'placeholder' => __('lang_v1.year'), 'id' => "card_year" ]); !!}
-                			</div>
-                		</div>
-            		</div>
-        		</div>
+
+		<div class="col-md-4">
+			<div class="form-group">
+				{!! Form::label("card_number", __('lang_v1.card_no')) !!}
+				{!! Form::text("", null, ['class' => 'form-control', 'placeholder' => __('lang_v1.card_no'), 'id' => "card_number", 'autofocus']); !!}
+			</div>
+		</div>
+		<div class="col-md-4">
+			<div class="form-group">
+				{!! Form::label("card_holder_name", __('lang_v1.card_holder_name')) !!}
+				{!! Form::text("", null, ['class' => 'form-control', 'placeholder' => __('lang_v1.card_holder_name'), 'id' => "card_holder_name"]); !!}
+			</div>
+		</div>
+		<div class="col-md-4">
+			<div class="form-group">
+				{!! Form::label("card_transaction_number",__('lang_v1.card_transaction_no')) !!}
+				{!! Form::text("", null, ['class' => 'form-control', 'placeholder' => __('lang_v1.card_transaction_no'), 'id' => "card_transaction_number"]); !!}
+			</div>
+		</div>
+		<div class="clearfix"></div>
+		<div class="col-md-3">
+			<div class="form-group">
+				{!! Form::label("card_type", __('lang_v1.card_type')) !!}
+				{!! Form::select("", ['visa' => 'Visa', 'master' => 'MasterCard'], 'visa',['class' => 'form-control select2', 'id' => "card_type" ]); !!}
+			</div>
+		</div>
+		<div class="col-md-3">
+			<div class="form-group">
+				{!! Form::label("card_month", __('lang_v1.month')) !!}
+				{!! Form::text("", null, ['class' => 'form-control', 'placeholder' => __('lang_v1.month'),
+				'id' => "card_month" ]); !!}
+			</div>
+		</div>
+		<div class="col-md-3">
+			<div class="form-group">
+				{!! Form::label("card_year", __('lang_v1.year')) !!}
+				{!! Form::text("", null, ['class' => 'form-control', 'placeholder' => __('lang_v1.year'), 'id' => "card_year" ]); !!}
+			</div>
+		</div>
+		<div class="col-md-3">
+			<div class="form-group">
+				{!! Form::label("card_security",__('lang_v1.security_code')) !!}
+				{!! Form::text("", null, ['class' => 'form-control', 'placeholder' => __('lang_v1.security_code'), 'id' => "card_security"]); !!}
+			</div>
+		</div>
+					</div>
+				</div>
 					<div class="alerts">
 						<div class="alert alert-success alert-card-charged" style="display:none">Success</div>
 						<div class="alert alert-danger alert-card-failed" style="display:none">Failed</div>
@@ -216,7 +229,6 @@
 			</div>
 
 			<div class="modal-footer">
-				<button type="button" class="btn btn-primary hidden" id="pos-charge-card-customer-copy">Merchant Copy</button>
 				<button type="button" class="btn btn-primary" id="pos-charge-card">@lang('sale.charge_card')</button>
 				<button type="button" class="btn btn-primary" id="pos-save-card">@lang('sale.finalize_payment')</button>
 			</div>
@@ -224,27 +236,3 @@
 		</div>
 	</div>
 </div>
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-<script>
-    // jQuery code to run when the input value changes
-    $(document).ready(function () {
-        var delayTimer;
-        $('#card_string').on('input', function () {
-            clearTimeout(delayTimer);
-            var inputString = $(this).val();
-            delayTimer = setTimeout(function () {
-                var cleanedString = inputString.replace(/ /g, '').replace(/^%B/, '');
-                var splitArray = cleanedString.split('^');
-                var firstValue = splitArray[0];
-                var secondValue = splitArray[1];
-                var thirdValue = splitArray[2];
-                var furtherSplit = thirdValue.split('=');
-                var desiredValue = furtherSplit[1].substring(0, 4);
-                $("#card_number").val(firstValue);
-                $("#card_holder_name").val(secondValue);
-                $("#card_month").val(furtherSplit[1].substring(2, 4));
-                $("#card_year").val(furtherSplit[1].substring(0, 2));
-            }, 1000);
-      });
-    });
-  </script>

@@ -217,6 +217,7 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
     Route::get('/reports/get-profit/{by?}', 'ReportController@getProfit');
     Route::get('/reports/items-report', 'ReportController@itemsReport');
     Route::get('/reports/get-stock-value', 'ReportController@getStockValue');
+    Route::get('/reports/payment-report', 'ReportController@paymentReport');
     
     Route::get('business-location/activate-deactivate/{location_id}', 'BusinessLocationController@activateDeactivateLocation');
 
@@ -433,4 +434,10 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone'])
         ->name('packing.downloadPdf');
     Route::get('/sells/invoice-url/{id}', 'SellPosController@showInvoiceUrl');
     Route::get('/show-notification/{id}', 'HomeController@showNotification');
+});
+Route::get('/auto_register_close', 'AutoRegisterCloseController@index');
+Route::get('/testing', 'TestingController@index');
+Route::get('/clear-cache', function() {
+    $exitCode = Artisan::call('cache:clear');
+    // return what you want
 });

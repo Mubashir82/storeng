@@ -67,32 +67,32 @@ class AdminSidebarMenu
                 $menu->dropdown(
                     __('contact.contacts'),
                     function ($sub) {
-                        if (auth()->user()->can('supplier.view') || auth()->user()->can('supplier.view_own')) {
-                            $sub->url(
-                                action('ContactController@index', ['type' => 'supplier']),
-                                __('report.supplier'),
-                                ['icon' => 'fa fas fa-star', 'active' => request()->input('type') == 'supplier']
-                            );
-                        }
+                        // if (auth()->user()->can('supplier.view') || auth()->user()->can('supplier.view_own')) {
+                        //     $sub->url(
+                        //         action('ContactController@index', ['type' => 'supplier']),
+                        //         __('report.supplier'),
+                        //         ['icon' => 'fa fas fa-star', 'active' => request()->input('type') == 'supplier']
+                        //     );
+                        // }
                         if (auth()->user()->can('customer.view') || auth()->user()->can('customer.view_own')) {
                             $sub->url(
                                 action('ContactController@index', ['type' => 'customer']),
                                 __('report.customer'),
                                 ['icon' => 'fa fas fa-star', 'active' => request()->input('type') == 'customer']
                             );
-                            $sub->url(
-                                action('CustomerGroupController@index'),
-                                __('lang_v1.customer_groups'),
-                                ['icon' => 'fa fas fa-users', 'active' => request()->segment(1) == 'customer-group']
-                            );
+                            // $sub->url(
+                            //     action('CustomerGroupController@index'),
+                            //     __('lang_v1.customer_groups'),
+                            //     ['icon' => 'fa fas fa-users', 'active' => request()->segment(1) == 'customer-group']
+                            // );
                         }
-                        if (auth()->user()->can('supplier.create') || auth()->user()->can('customer.create')) {
-                            $sub->url(
-                                action('ContactController@getImportContacts'),
-                                __('lang_v1.import_contacts'),
-                                ['icon' => 'fa fas fa-download', 'active' => request()->segment(1) == 'contacts' && request()->segment(2) == 'import']
-                            );
-                        }
+                        // if (auth()->user()->can('supplier.create') || auth()->user()->can('customer.create')) {
+                        //     $sub->url(
+                        //         action('ContactController@getImportContacts'),
+                        //         __('lang_v1.import_contacts'),
+                        //         ['icon' => 'fa fas fa-download', 'active' => request()->segment(1) == 'contacts' && request()->segment(2) == 'import']
+                        //     );
+                        // }
 
                         if(!empty(env('GOOGLE_MAP_API_KEY'))) {
                             $sub->url(
@@ -112,7 +112,7 @@ class AdminSidebarMenu
                 auth()->user()->can('category.view') || auth()->user()->can('brand.create') ||
                 auth()->user()->can('unit.create') || auth()->user()->can('category.create')) {
                 $menu->dropdown(
-                    __('sale.products'),
+                    __('sale.inventory'),
                     function ($sub) {
                         if (auth()->user()->can('product.view')) {
                             $sub->url(
@@ -141,18 +141,18 @@ class AdminSidebarMenu
                                 __('product.variations'),
                                 ['icon' => 'fa fas fa-circle', 'active' => request()->segment(1) == 'variation-templates']
                             );
-                            $sub->url(
-                                action('ImportProductsController@index'),
-                                __('product.import_products'),
-                                ['icon' => 'fa fas fa-download', 'active' => request()->segment(1) == 'import-products']
-                            );
+                            // $sub->url(
+                            //     action('ImportProductsController@index'),
+                            //     __('product.import_products'),
+                            //     ['icon' => 'fa fas fa-download', 'active' => request()->segment(1) == 'import-products']
+                            // );
                         }
                         if (auth()->user()->can('product.opening_stock')) {
-                            $sub->url(
-                                action('ImportOpeningStockController@index'),
-                                __('lang_v1.import_opening_stock'),
-                                ['icon' => 'fa fas fa-download', 'active' => request()->segment(1) == 'import-opening-stock']
-                            );
+                            // $sub->url(
+                            //     action('ImportOpeningStockController@index'),
+                            //     __('lang_v1.import_opening_stock'),
+                            //     ['icon' => 'fa fas fa-download', 'active' => request()->segment(1) == 'import-opening-stock']
+                            // );
                         }
                         if (auth()->user()->can('product.create')) {
                             $sub->url(
@@ -468,6 +468,14 @@ class AdminSidebarMenu
                 $menu->dropdown(
                     __('report.reports'),
                     function ($sub) use ($enabled_modules, $is_admin) {
+                        if (auth()->user()->can('trending_product_report.view')) {
+                            $sub->url(
+                                action('ReportController@getTrendingProducts'),
+                                __('report.trending_products'),
+                                ['icon' => 'fa fas fa-chart-line', 'active' => request()->segment(2) == 'trending-products']
+                            );
+                        }
+                        
                         if (auth()->user()->can('profit_loss_report.view')) {
                             $sub->url(
                                 action('ReportController@getProfitLoss'),
@@ -504,18 +512,18 @@ class AdminSidebarMenu
                                 ['icon' => 'fa fas fa-percent', 'active' => request()->segment(2) == 'tax-report']
                             );
                         }
-                        if (auth()->user()->can('contacts_report.view')) {
-                            $sub->url(
-                                action('ReportController@getCustomerSuppliers'),
-                                __('report.contacts'),
-                                ['icon' => 'fa fas fa-address-book', 'active' => request()->segment(2) == 'customer-supplier']
-                            );
-                            $sub->url(
-                                action('ReportController@getCustomerGroup'),
-                                __('lang_v1.customer_groups_report'),
-                                ['icon' => 'fa fas fa-users', 'active' => request()->segment(2) == 'customer-group']
-                            );
-                        }
+                        // if (auth()->user()->can('contacts_report.view')) {
+                            // $sub->url(
+                            //     action('ReportController@getCustomerSuppliers'),
+                            //     __('report.contacts'),
+                            //     ['icon' => 'fa fas fa-address-book', 'active' => request()->segment(2) == 'customer-supplier']
+                            // );
+                            // $sub->url(
+                            //     action('ReportController@getCustomerGroup'),
+                            //     __('lang_v1.customer_groups_report'),
+                            //     ['icon' => 'fa fas fa-users', 'active' => request()->segment(2) == 'customer-group']
+                            // );
+                        // }
                         if (auth()->user()->can('stock_report.view')) {
                             $sub->url(
                                 action('ReportController@getStockReport'),
@@ -544,14 +552,6 @@ class AdminSidebarMenu
                                     ['icon' => 'fa fas fa-sliders-h', 'active' => request()->segment(2) == 'stock-adjustment-report']
                                 );
                             }
-                        }
-
-                        if (auth()->user()->can('trending_product_report.view')) {
-                            $sub->url(
-                                action('ReportController@getTrendingProducts'),
-                                __('report.trending_products'),
-                                ['icon' => 'fa fas fa-chart-line', 'active' => request()->segment(2) == 'trending-products']
-                            );
                         }
 
                         if (auth()->user()->can('purchase_n_sell_report.view')) {
@@ -660,9 +660,9 @@ class AdminSidebarMenu
             }
 
             //Notification template menu
-            if (auth()->user()->can('send_notifications')) {
-                $menu->url(action('NotificationTemplateController@index'), __('lang_v1.notification_templates'), ['icon' => 'fa fas fa-envelope', 'active' => request()->segment(1) == 'notification-templates'])->order(80);
-            }
+            // if (auth()->user()->can('send_notifications')) {
+            //     $menu->url(action('NotificationTemplateController@index'), __('lang_v1.notification_templates'), ['icon' => 'fa fas fa-envelope', 'active' => request()->segment(1) == 'notification-templates'])->order(80);
+            // }
 
             //Settings Dropdown
             if (auth()->user()->can('business_settings.access') ||
@@ -737,6 +737,13 @@ class AdminSidebarMenu
                                 action('TypesOfServiceController@index'),
                                 __('lang_v1.types_of_service'),
                                 ['icon' => 'fa fas fa-user-circle', 'active' => request()->segment(1) == 'types-of-service']
+                            );
+                        }
+                        if (auth()->user()->can('send_notifications')) {
+                            $sub->url(
+                                action('NotificationTemplateController@index'), 
+                                __('lang_v1.notification_templates'), 
+                                ['icon' => 'fa fas fa-envelope', 'active' => request()->segment(1) == 'notification-templates']
                             );
                         }
                     },

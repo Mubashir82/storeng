@@ -112,4 +112,19 @@
             @endif
 	    @endforeach
 	@endif
+	<script>
+        function drawDisplay() {
+        	var seconds = -1
+        	return ()=>{
+        		var date = new Date();
+        		if (date.getSeconds() > seconds || (date.getSeconds() === 0 && seconds === 59)) {
+                    time = date.getHours()+'-'+date.getMinutes()+'-'+date.getSeconds();
+        			if(time == '0-0-0'){
+            			window.location.reload();
+        			}
+        		}
+        	};
+        }
+        setInterval(drawDisplay, 1000);
+    </script>
 @endsection

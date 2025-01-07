@@ -177,6 +177,38 @@
 
     @component('components.widget', ['class' => 'box-primary'])
         <div class="row">
+            <div class="col-sm-4 @if(!session('business.enable_price_tax')) hide @endif">
+              <div class="form-group">
+                {!! Form::label('tax', __('product.applicable_tax') . ':') !!}
+                  {!! Form::select('tax', $taxes, $product->tax, ['placeholder' => __('messages.please_select'), 'class' => 'form-control select2'], $tax_attributes); !!}
+              </div>
+            </div>
+
+            <div class="col-sm-4 @if(!session('business.enable_price_tax')) hide @endif">
+              <div class="form-group">
+                {!! Form::label('tax_type', __('product.selling_price_tax_type') . ':*') !!}
+                  {!! Form::select('tax_type',['inclusive' => __('product.inclusive'), 'exclusive' => __('product.exclusive')], $product->tax_type,
+                  ['class' => 'form-control select2', 'required']); !!}
+              </div>
+            </div>
+
+            <div class="clearfix"></div>
+            <div class="col-sm-4">
+              <div class="form-group">
+                {!! Form::label('type', __('product.product_type') . ':*') !!} @show_tooltip(__('tooltip.product_type'))
+                {!! Form::select('type', $product_types, $product->type, ['class' => 'form-control select2',
+                  'required','disabled', 'data-action' => 'edit', 'data-product_id' => $product->id ]); !!}
+              </div>
+            </div>
+
+            <div class="form-group col-sm-12" id="product_form_part"></div>
+            <input type="hidden" id="variation_counter" value="0">
+            <input type="hidden" id="default_profit_percent" value="{{ $default_profit_percent }}">
+            </div>
+    @endcomponent
+
+        @component('components.widget', ['class' => 'box-primary'])
+        <div class="row">
         @if(session('business.enable_product_expiry'))
 
           @if(session('business.expiry_type') == 'add_expiry')
@@ -316,39 +348,7 @@
         @include('layouts.partials.module_form_part')
         </div>
     @endcomponent
-
-    @component('components.widget', ['class' => 'box-primary'])
-        <div class="row">
-            <div class="col-sm-4 @if(!session('business.enable_price_tax')) hide @endif">
-              <div class="form-group">
-                {!! Form::label('tax', __('product.applicable_tax') . ':') !!}
-                  {!! Form::select('tax', $taxes, $product->tax, ['placeholder' => __('messages.please_select'), 'class' => 'form-control select2'], $tax_attributes); !!}
-              </div>
-            </div>
-
-            <div class="col-sm-4 @if(!session('business.enable_price_tax')) hide @endif">
-              <div class="form-group">
-                {!! Form::label('tax_type', __('product.selling_price_tax_type') . ':*') !!}
-                  {!! Form::select('tax_type',['inclusive' => __('product.inclusive'), 'exclusive' => __('product.exclusive')], $product->tax_type,
-                  ['class' => 'form-control select2', 'required']); !!}
-              </div>
-            </div>
-
-            <div class="clearfix"></div>
-            <div class="col-sm-4">
-              <div class="form-group">
-                {!! Form::label('type', __('product.product_type') . ':*') !!} @show_tooltip(__('tooltip.product_type'))
-                {!! Form::select('type', $product_types, $product->type, ['class' => 'form-control select2',
-                  'required','disabled', 'data-action' => 'edit', 'data-product_id' => $product->id ]); !!}
-              </div>
-            </div>
-
-            <div class="form-group col-sm-12" id="product_form_part"></div>
-            <input type="hidden" id="variation_counter" value="0">
-            <input type="hidden" id="default_profit_percent" value="{{ $default_profit_percent }}">
-            </div>
-    @endcomponent
-
+    
   <div class="row">
     <input type="hidden" name="submit_type" id="submit_type">
         <div class="col-sm-12">
@@ -376,7 +376,7 @@
 @endsection
 
 @section('javascript')
-  <script src="{{ asset('js/product.js?v=' . $asset_v) }}"></script>
+  <script src="{{ asset('js/products.js') }}"></script>
   <script type="text/javascript">
     $(document).ready( function(){
       __page_leave_confirmation('#product_add_form');

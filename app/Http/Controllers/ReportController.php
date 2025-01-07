@@ -901,25 +901,19 @@ class ReportController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function getStockAdjustmentReport(Request $request)
-    {
+    public function getStockAdjustmentReport(Request $request){
         if (!auth()->user()->can('stock_report.view')) {
             abort(403, 'Unauthorized action.');
         }
-
         $business_id = $request->session()->get('user.business_id');
-
         //Return the details in ajax call
         if ($request->ajax()) {
-            $query =  Transaction::where('business_id', $business_id)
-                            ->where('type', 'stock_adjustment');
-
+            $query =  Transaction::where('business_id', $business_id)->where('type', 'stock_adjustment');
             //Check for permitted locations of a user
             $permitted_locations = auth()->user()->permitted_locations();
             if ($permitted_locations != 'all') {
                 $query->whereIn('location_id', $permitted_locations);
             }
-
             $start_date = $request->get('start_date');
             $end_date = $request->get('end_date');
             if (!empty($start_date) && !empty($end_date)) {
@@ -929,7 +923,6 @@ class ReportController extends Controller
             if (!empty($location_id)) {
                 $query->where('location_id', $location_id);
             }
-
             $stock_adjustment_details = $query->select(
                 DB::raw("SUM(final_total) as total_amount"),
                 DB::raw("SUM(total_amount_recovered) as total_recovered"),
@@ -939,9 +932,7 @@ class ReportController extends Controller
             return $stock_adjustment_details;
         }
         $business_locations = BusinessLocation::forDropdown($business_id, true);
-
-        return view('report.stock_adjustment_report')
-                    ->with(compact('business_locations'));
+        return view('report.stock_adjustment_report')->with(compact('business_locations'));
     }
 
     /**
@@ -983,18 +974,18 @@ class ReportController extends Controller
                     ),
                     'bl.name as location_name',
                     DB::raw("SUM(IF(pay_method='cash', IF(transaction_type='sell', amount, 0), 0)) as total_cash_payment"),
-                    DB::raw("SUM(IF(pay_method='cheque', IF(transaction_type='sell', amount, 0), 0)) as total_cheque_payment"),
+                    // DB::raw("SUM(IF(pay_method='cheque', IF(transaction_type='sell', amount, 0), 0)) as total_cheque_payment"),
                     DB::raw("SUM(IF(pay_method='card', IF(transaction_type='sell', amount, 0), 0)) as total_card_payment"),
-                    DB::raw("SUM(IF(pay_method='bank_transfer', IF(transaction_type='sell', amount, 0), 0)) as total_bank_transfer_payment"),
-                    DB::raw("SUM(IF(pay_method='other', IF(transaction_type='sell', amount, 0), 0)) as total_other_payment"),
-                    DB::raw("SUM(IF(pay_method='advance', IF(transaction_type='sell', amount, 0), 0)) as total_advance_payment"),
-                    DB::raw("SUM(IF(pay_method='custom_pay_1', IF(transaction_type='sell', amount, 0), 0)) as total_custom_pay_1"),
-                    DB::raw("SUM(IF(pay_method='custom_pay_2', IF(transaction_type='sell', amount, 0), 0)) as total_custom_pay_2"),
-                    DB::raw("SUM(IF(pay_method='custom_pay_3', IF(transaction_type='sell', amount, 0), 0)) as total_custom_pay_3"),
-                    DB::raw("SUM(IF(pay_method='custom_pay_4', IF(transaction_type='sell', amount, 0), 0)) as total_custom_pay_4"),
-                    DB::raw("SUM(IF(pay_method='custom_pay_5', IF(transaction_type='sell', amount, 0), 0)) as total_custom_pay_5"),
-                    DB::raw("SUM(IF(pay_method='custom_pay_6', IF(transaction_type='sell', amount, 0), 0)) as total_custom_pay_6"),
-                    DB::raw("SUM(IF(pay_method='custom_pay_7', IF(transaction_type='sell', amount, 0), 0)) as total_custom_pay_7")
+                    // DB::raw("SUM(IF(pay_method='bank_transfer', IF(transaction_type='sell', amount, 0), 0)) as total_bank_transfer_payment"),
+                    DB::raw("SUM(IF(pay_method='other', IF(transaction_type='sell', amount, 0), 0)) as total_other_payment")
+                    // DB::raw("SUM(IF(pay_method='advance', IF(transaction_type='sell', amount, 0), 0)) as total_advance_payment"),
+                    // DB::raw("SUM(IF(pay_method='custom_pay_1', IF(transaction_type='sell', amount, 0), 0)) as total_custom_pay_1"),
+                    // DB::raw("SUM(IF(pay_method='custom_pay_2', IF(transaction_type='sell', amount, 0), 0)) as total_custom_pay_2"),
+                    // DB::raw("SUM(IF(pay_method='custom_pay_3', IF(transaction_type='sell', amount, 0), 0)) as total_custom_pay_3"),
+                    // DB::raw("SUM(IF(pay_method='custom_pay_4', IF(transaction_type='sell', amount, 0), 0)) as total_custom_pay_4"),
+                    // DB::raw("SUM(IF(pay_method='custom_pay_5', IF(transaction_type='sell', amount, 0), 0)) as total_custom_pay_5"),
+                    // DB::raw("SUM(IF(pay_method='custom_pay_6', IF(transaction_type='sell', amount, 0), 0)) as total_custom_pay_6"),
+                    // DB::raw("SUM(IF(pay_method='custom_pay_7', IF(transaction_type='sell', amount, 0), 0)) as total_custom_pay_7")
                 )->groupBy('cash_registers.id');
 
             $permitted_locations = auth()->user()->permitted_locations();
@@ -1017,7 +1008,10 @@ class ReportController extends Controller
             }
             return Datatables::of($registers)
                 ->editColumn('total_card_payment', function ($row) {
-                    return '<span data-orig-value="' . $row->total_card_payment . '" >' . $this->transactionUtil->num_f($row->total_card_payment, true) . ' (' . $row->total_card_slips . ')</span>';
+                    return '<span data-orig-value="' . $row->total_card_payment . '" >' . $this->transactionUtil->num_f($row->total_card_payment, true) . '</span>';
+                })
+                ->editColumn('total_card_slips', function ($row) {
+                    return '<span data-orig-value="' . $row->total_card_slips . '" >' . $row->total_card_slips . '</span>';
                 })
                 ->editColumn('total_cheque_payment', function ($row) {
                     return '<span data-orig-value="' . $row->total_cheque_payment . '" >' . $this->transactionUtil->num_f($row->total_cheque_payment, true) . ' (' . $row->total_cheques . ')</span>';
@@ -1076,7 +1070,7 @@ class ReportController extends Controller
                 ->filterColumn('user_name', function ($query, $keyword) {
                     $query->whereRaw("CONCAT(COALESCE(surname, ''), ' ', COALESCE(first_name, ''), ' ', COALESCE(last_name, ''), '<br>', COALESCE(u.email, '')) like ?", ["%{$keyword}%"]);
                 })
-                ->rawColumns(['action', 'user_name', 'total_card_payment', 'total_cheque_payment', 'total_cash_payment', 'total_bank_transfer_payment', 'total_other_payment', 'total_advance_payment', 'total_custom_pay_1', 'total_custom_pay_2', 'total_custom_pay_3', 'total_custom_pay_4', 'total_custom_pay_5', 'total_custom_pay_6', 'total_custom_pay_7', 'total'])
+                ->rawColumns(['action', 'user_name', 'total_card_payment', 'total_card_slips', 'total_cheque_payment', 'total_cash_payment', 'total_bank_transfer_payment', 'total_other_payment', 'total_advance_payment', 'total_custom_pay_1', 'total_custom_pay_2', 'total_custom_pay_3', 'total_custom_pay_4', 'total_custom_pay_5', 'total_custom_pay_6', 'total_custom_pay_7', 'total'])
                 ->make(true);
         }
 
@@ -3450,7 +3444,147 @@ class ReportController extends Controller
             'profit_margin' => $profit_margin
         ];
     }
+    
+    public function paymentReport(Request $request)
+    {
+        if (!auth()->user()->can('purchase_n_sell_report.view')) {
+            abort(403, 'Unauthorized action.');
+        }
 
+        $business_id = $request->session()->get('user.business_id');
+
+        $payment_types = $this->transactionUtil->payment_types(null, true, $business_id);
+        if ($request->ajax()) {
+            $customer_id = $request->get('supplier_id', null);
+            $contact_filter1 = !empty($customer_id) ? "AND t.contact_id=$customer_id" : '';
+            $contact_filter2 = !empty($customer_id) ? "AND transactions.contact_id=$customer_id" : '';
+
+            $location_id = $request->get('location_id', null);
+            $parent_payment_query_part = empty($location_id) ? "AND transaction_payments.parent_id IS NULL" : "";
+
+            $query = TransactionPayment::leftjoin('transactions as t', function ($join) use ($business_id) {
+                $join->on('transaction_payments.transaction_id', '=', 't.id')
+                    ->where('t.business_id', $business_id)
+                    ->whereIn('t.type', ['sell', 'opening_balance']);
+            })
+                ->leftjoin('contacts as c', 't.contact_id', '=', 'c.id')
+                ->leftjoin('customer_groups AS CG', 'c.customer_group_id', '=', 'CG.id')
+                ->where('transaction_payments.business_id', $business_id)
+                ->where(function ($q) use ($business_id, $contact_filter1, $contact_filter2, $parent_payment_query_part) {
+                    $q->whereRaw("(transaction_payments.transaction_id IS NOT NULL AND t.type IN ('sell', 'opening_balance') $parent_payment_query_part $contact_filter1)")
+                        ->orWhereRaw("EXISTS(SELECT * FROM transaction_payments as tp JOIN transactions ON tp.transaction_id = transactions.id WHERE transactions.type IN ('sell', 'opening_balance') AND transactions.business_id = $business_id AND tp.parent_id=transaction_payments.id $contact_filter2)");
+                })
+                ->select(
+                    DB::raw("IF(transaction_payments.transaction_id IS NULL, 
+                                (SELECT c.name FROM transactions as ts
+                                JOIN contacts as c ON ts.contact_id=c.id 
+                                WHERE ts.id=(
+                                        SELECT tps.transaction_id FROM transaction_payments as tps
+                                        WHERE tps.parent_id=transaction_payments.id LIMIT 1
+                                    )
+                                ),
+                                (SELECT CONCAT(COALESCE(CONCAT(c.supplier_business_name, '<br>'), ''), c.name) FROM transactions as ts JOIN
+                                    contacts as c ON ts.contact_id=c.id
+                                    WHERE ts.id=t.id 
+                                )
+                            ) as customer"),
+                    'transaction_payments.amount',
+                    'transaction_payments.is_return',
+                    'method',
+                    'paid_on',
+                    'transaction_payments.payment_ref_no',
+                    'transaction_payments.document',
+                    'transaction_payments.transaction_no',
+                    't.invoice_no',
+                    't.id as transaction_id',
+                    'cheque_number',
+                    'card_transaction_number',
+                    'bank_account_number',
+                    'transaction_payments.id as DT_RowId',
+                    'CG.name as customer_group'
+                )
+                ->groupBy('transaction_payments.id');
+
+            $start_date = $request->get('start_date');
+            $end_date = $request->get('end_date');
+            if (!empty($start_date) && !empty($end_date)) {
+                $query->whereBetween(DB::raw('date(paid_on)'), [$start_date, $end_date]);
+            }
+
+            $permitted_locations = auth()->user()->permitted_locations();
+            if ($permitted_locations != 'all') {
+                $query->whereIn('t.location_id', $permitted_locations);
+            }
+            
+            if (!empty($request->get('customer_group_id'))) {
+                $query->where('CG.id', $request->get('customer_group_id'));
+            }
+
+            if (!empty($location_id)) {
+                $query->where('t.location_id', $location_id);
+            }
+            if (!empty($request->has('commission_agent'))) {
+                $query->where('t.commission_agent', $request->get('commission_agent'));
+            }
+
+            if (!empty($request->get('payment_types'))) {
+                $query->where('transaction_payments.method', $request->get('payment_types'));
+            }
+
+            return Datatables::of($query)
+                 ->editColumn('invoice_no', function ($row) {
+                     if (!empty($row->transaction_id)) {
+                         return '<a data-href="' . action('SellController@show', [$row->transaction_id])
+                            . '" href="#" data-container=".view_modal" class="btn-modal">' . $row->invoice_no . '</a>';
+                     } else {
+                         return '';
+                     }
+                 })
+                ->editColumn('paid_on', '{{@format_datetime($paid_on)}}')
+                ->editColumn('method', function ($row) use ($payment_types) {
+                    $method = !empty($payment_types[$row->method]) ? $payment_types[$row->method] : '';
+                    if ($row->method == 'cheque') {
+                        $method .= '<br>(' . __('lang_v1.cheque_no') . ': ' . $row->cheque_number . ')';
+                    } elseif ($row->method == 'card') {
+                        $method .= '<br>(' . __('lang_v1.card_transaction_no') . ': ' . $row->card_transaction_number . ')';
+                    } elseif ($row->method == 'bank_transfer') {
+                        $method .= '<br>(' . __('lang_v1.bank_account_no') . ': ' . $row->bank_account_number . ')';
+                    } elseif ($row->method == 'custom_pay_1') {
+                        $method .= '<br>(' . __('lang_v1.transaction_no') . ': ' . $row->transaction_no . ')';
+                    } elseif ($row->method == 'custom_pay_2') {
+                        $method .= '<br>(' . __('lang_v1.transaction_no') . ': ' . $row->transaction_no . ')';
+                    } elseif ($row->method == 'custom_pay_3') {
+                        $method .= '<br>(' . __('lang_v1.transaction_no') . ': ' . $row->transaction_no . ')';
+                    }
+                    if ($row->is_return == 1) {
+                        $method .= '<br><small>(' . __('lang_v1.change_return') . ')</small>';
+                    }
+                    return $method;
+                })
+                ->editColumn('amount', function ($row) {
+                    $amount = $row->is_return == 1 ? -1 * $row->amount : $row->amount;
+                    return '<span class="display_currency paid-amount" data-orig-value="' . $amount . '" data-currency_symbol = true>' . $amount . '</span>';
+                })
+                ->addColumn('action', '<button type="button" class="btn btn-primary btn-xs view_payment" data-href="{{ action("TransactionPaymentController@viewPayment", [$DT_RowId]) }}">@lang("messages.view")
+                    </button> @if(!empty($document))<a href="{{asset("/uploads/documents/" . $document)}}" class="btn btn-success btn-xs" download=""><i class="fa fa-download"></i> @lang("purchase.download_document")</a>@endif')
+                ->rawColumns(['invoice_no', 'amount', 'method', 'action', 'customer'])
+                ->make(true);
+        }
+        $business_locations = BusinessLocation::forDropdown($business_id);
+        $customers = Contact::customersDropdown($business_id, false);
+        $customer_groups = CustomerGroup::forDropdown($business_id, false, true);
+
+        return view('report.payment_report')
+            ->with(compact('business_locations', 'customers', 'payment_types', 'customer_groups'));
+    }
+    // {
+        // return '123';
+        // SELECT SUM(amount) AS total_amount, method, DATE(paid_on) AS payment_date
+        // FROM transaction_payments
+        // where Date(paid_on)>= '2023-12-01' and Date(paid_on)<= '2023-12-31'
+        // GROUP BY method, payment_date
+        // ORDER BY method, payment_date;
+    // }
     public function activityLog()
     {
         $business_id = request()->session()->get('user.business_id');

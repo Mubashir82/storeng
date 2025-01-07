@@ -651,7 +651,7 @@ $(document).ready(function() {
     });
 
     $('div#card_details_modal').on('shown.bs.modal', function(e) {
-        $('input#card_string').focus();
+        $('input#card_number').focus();
     });
 
     $('div#confirmSuspendModal').on('shown.bs.modal', function(e) {
@@ -672,173 +672,33 @@ $(document).ready(function() {
             $('#card_security').val('123');
         }
     });
-    let content = ``;
+
     $('button#pos-charge-card').click(function() {
         $('.alert-card-charged').hide();
         $('.alert-card-failed').hide();
-        if($('#card_number').val() == '' || $('#card_holder_name').val() == '' || $('#card_month').val() == '' || $('#card_year').val() == ''){
-            $('#card_details_modal .alert-card-failed').html('Swap Card or Enter Card Details').fadeIn('slow');
-            return false;
-        }
+
         let data = {
             cc_number: $('#card_number').val(),
-            cc_holder_name: $('#card_holder_name').val(),
             expiry_month: $('#card_month').val(),
             expiry_year: $('#card_year').val(),
             cvv: $('#card_security').val(),
-            amount: $('input[name="final_total"]').val(),
-            location_id: $('#select_location_id').val()
+            amount: $('input[name="final_total"]').val()
         }
+
         $.post('/charge', data, function(response) {
             response = JSON.parse(response);
             if (response.success) {
-                $("#pos-charge-card").addClass("hidden");
-                $("#pos-charge-card-customer-copy").removeClass("hidden");
-                const currentDate = new Date();
-                const date = currentDate.toLocaleDateString('en-US', {
-                                year: 'numeric',
-                                month: '2-digit',
-                                day: '2-digit',
-                            });
-                const time = currentDate.toLocaleTimeString('en-US', {
-                                hour: '2-digit',
-                                minute: '2-digit',
-                            });
                 $('#card_transaction_number').val(response.data.transaction_id);
                 $('#card_details_modal .alert-card-charged').html(response.message).fadeIn('slow');
-                content = `
-                    <div style="width: 290px;">
-                        <table style="max-width: 290px;  margin: 0 auto; border-collapse: collapse; font-family: Arial, sans-serif; ">
-                            <tr>
-                                <td colspan="2" style="font-weight: bold; text-align: center;">
-                                    <ul style="list-style: none; padding: 0;">
-                                        <li style="font-size: 18px;">Euless Vapor & Smoke</li>
-                                        <li style="font-size: 18px;">3334 Harwood Rd,</li>
-                                        <li style="font-size: 18px;">BEDFORD TX 76021</li>
-                                        <li style="font-size: 18px;">682-503-6305</li>
-                                    </ul>
-                                </td>
-                            </tr>   
-                        </table>
-                        <table colspan="2" style="font-size: 18px; padding: 0; width: 100%; font-weight: bold; text-align: center;">
-                            <tr>
-                                <td style="text-align: left; width: 50%;">`+date+`</td>
-                                <td style="text-align: right;width: 50%;">`+time+`</td>
-                            </tr>
-                        </table>
-                        <h1 style="text-align: center; font-size: 18px; padding: 0 !important; width: 100%;  margin: 0;">Sale</h1>
-                        <table colspan="2" style="font-size: 14px; font-weight: bold; padding: 5px; text-align: center; width: 100%;">
-                            <tr>
-                                <td style="text-align: left;font-size: 18px;width: 50%;">Trans:`+response.response.tran_no+` </td>
-                                <td style="text-align: right;  font-size: 18px; width: 50%;"></td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: left; width: 50%;">`+response.response.card_brand+`</td>         
-                                <td style="text-align: right;width: 50%;"> Tap</td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: left; width: 50%; ">XXXX`+response.response.pan+`</td> 
-                                <td style="text-align: right; width: 50%; ;">xx/xx</td>           
-                            </tr>
-                            <tr>
-                                <td style="text-align: left; width: 50%;">Amount</td>         
-                                <td style="text-align: right;width: 50%;">$`+response.response.amount+`</td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: left; width: 25%;">Resp </td>         
-                                <td style="text-align: right;width: 75%;">`+response.response.desc+`</td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: left; width: 50%;">Code</td>         
-                                <td style="text-align: right;width: 50%;">`+response.response.approval_code+`</td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: left; width: 50%;">Ref#</td>
-                                <td style="text-align: right;width: 50%;">`+response.response.rrn+`</td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: left; width: 50%;">App Name</td>
-                                <td style="text-align: right;width: 50%;">`+response.response.card_brand+`</td>
-                            </tr>
-                        </table>
-                        <div style="text-align: center; width: 100%; margin: 0; ">
-                            <p>Cardholder acknowledges receipt of goods and obligations set forth by the cardholder's agreement with issuer.</p>
-                            <p>X_________________X</p>
-                            <p  style="margin: 0; "><b>CUSTOMER COPY</b></p>
-                            <p  style="margin: 0; ">Thank You</p>
-                            <p  style="margin: 0; "><b>`+(response.response.card_holder_name).split('/')[0]+`</b></p>
-                            <p  style="margin: 0; ">Powered By Valor Pay</p>
-                        </div>
-                    </div>`;
-        
-                // Open a new window with the dynamically created content
-                let printWindow = window.open('', '_blank');
-                printWindow.document.write(`
-                <!DOCTYPE html>
-                <html lang="en">
-                <head>
-                  <meta charset="UTF-8">
-                  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                  <title>Printable Document</title>
-                  <style>
-                    body {
-                      font-family: Arial, sans-serif;
-                    }
-                    /* Add more print styles as needed */
-                  </style>
-                </head>
-                <body style="margin:0px !important;">${content}</body>
-                </html>
-              `);
-        
-                // Close the document after printing
-                printWindow.onafterprint = function () {
-                    printWindow.close();
-                };
-                // Trigger the print dialog
-                printWindow.print();
             } else {
                 $('#card_details_modal .alert-card-failed').html(response.message).fadeIn('slow');
             }
         });
     });
-    $('button#pos-charge-card-customer-copy').click(function() {
-        // $("#pos-charge-card").removeClass("hidden");
-        $("#pos-charge-card-customer-copy").addClass("hidden");
-        content = content.replace("CUSTOMER","MERCHANT");
-        // Open a new window with the dynamically created content
-        let printWindow = window.open('', '_blank');
-        printWindow.document.write(`
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-          <meta charset="UTF-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>Printable Document</title>
-          <style>
-            body {
-              font-family: Arial, sans-serif;
-            }
-            /* Add more print styles as needed */
-          </style>
-        </head>
-        <body style="margin:0px !important;">${content}</body>
-        </html>
-      `);
 
-        // Close the document after printing
-        printWindow.onafterprint = function () {
-            printWindow.close();
-        };
-        // Trigger the print dialog
-        printWindow.print();
-        content = ``;
-    });
     //on save card details
     $('button#pos-save-card').click(function() {
-        $("#pos-charge-card").removeClass("hidden");
-        $("#pos-charge-card-customer-copy").addClass("hidden");
-        $(".alert-card-charged").hide();
+
         // Temporarily disabling, cuz client wants a solution for swipe card.
         // -----
         // $('.alert-card-charged').hide();
@@ -3024,7 +2884,6 @@ function submitQuickContactForm(form) {
                 update_shipping_address(result.data)
                 toastr.success(result.msg);
             } else {
-                
                 toastr.error(result.msg);
             }
         },
